@@ -1,17 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
+import './App.css';
+import JsonToYaml from './Pages/JsonToYaml';
+import { Tabs } from 'antd';
 import reportWebVitals from './reportWebVitals';
+
+const { TabPane } = Tabs;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <div className="card-container">
+    <Tabs type="card">
+      <TabPane tab="JSON To YAML " key="1">
+        <React.StrictMode>
+          <JsonToYaml />
+        </React.StrictMode>
+      </TabPane>
+      <TabPane tab="Tab Title 2" key="2">
+        <p>Content of Tab Pane 2</p>
+        <p>Content of Tab Pane 2</p>
+        <p>Content of Tab Pane 2</p>
+      </TabPane>
+      <TabPane tab="Tab Title 3" key="3">
+        <p>Content of Tab Pane 3</p>
+        <p>Content of Tab Pane 3</p>
+        <p>Content of Tab Pane 3</p>
+      </TabPane>
+    </Tabs>
+  </div>
+
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
