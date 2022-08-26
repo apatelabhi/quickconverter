@@ -1,49 +1,81 @@
 import { Input } from 'antd';
 import React from 'react';
 import { useState, useEffect } from "react";
+import JSONPretty from 'react-json-pretty';
+import 'react-json-pretty/themes/monikai.css';
+import { load } from 'js-yaml'
+
 const { TextArea } = Input;
 
 
 function JsonToYaml() {
     const [json, setJson] = useState("");
+    const [validJson, setValidJson] = useState("");
+    const [output, setOutput] = React.useState('')
     const [yaml, setYAML] = useState("");
 
     useEffect(() => {
-        // storing input json
-        localStorage.setItem("json", JSON.stringify(json));
-    }, [json]);
+        const value = localStorage.getItem('json')
+        setJson(value)
+        log({target: {value}})
+
+    }, []);
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
-
-        const YAML = require('json-to-pretty-yaml');
-
-        const data = YAML.stringify(json);
-        setYAML(data)
-        localStorage.setItem("yaml", data);
-
-        //alert(data)
     }
+
+    function validateJson() {
+        localStorage.setItem("validJson", json);
+        setValidJson(json)
+    }
+
+    function converJsonToYaml() {
+        setYAML(output)
+        localStorage.setItem("yaml", output);
+    }
+
+    function clearData() {
+        //localStorage.setItem("json", "");
+        //setJson("")
+        setValidJson("")
+        setYAML("")
+    }
+
+    const log = ({target: {value: json}})  => Promise.resolve(json)
+    .then(load)
+    .then(t => JSON.stringify(t, null, 2))
+    .then(setOutput)
+    .then(() => localStorage.setItem('json', json))
+
+    var JSONPrettyMon = require('react-json-pretty/dist/monikai');
 
     return (
         <>
-            <form onSubmit={handleSubmit}> 
+            <form onSubmit={handleSubmit}>
                 <TextArea
+                    style={{ height: '400px', width: '800px' }}
                     rows={4}
                     type="text"
-                    value={json}
-                    onChange={(e) => setJson(e.target.value)}
+                    //value={json}
+                    defaultValue={json}
+                    onChange={log}
+                    //onChange={(e) => setJson(e.target.value)}
                 />
 
-                <br />
-                <input type="submit" value="JSON TO YAML"></input>
+                <div style={{ marginTop: '-410px', marginLeft: '830px' }}>
+                    <JSONPretty style={{ marginTop: '10px', height: '410px', display: 'flex' }} data={validJson} theme={JSONPrettyMon} themeClassName="custom-json-pretty"></JSONPretty>
+                </div>
 
-                <br />
-                <TextArea rows={4} 
-                placeholder="maxLength is 6" 
-                maxLength={6} 
-                type="text"
-                value={yaml}
+                <button style={{ marginLeft: '300px', float: 'left' }} onClick={validateJson}>Validate Json</button>
+                <button style={{ marginLeft: '10px', float: 'left' }} onClick={converJsonToYaml}>JSON TO YAML</button>
+                <button style={{ marginLeft: '10px', float: 'left' }} onClick={clearData}>Clear</button>
+
+                
+                <TextArea rows={4}
+                    style={{ height: '400px', width: '1450px', marginTop: '10px', marginBottom: '10px' }}
+                    type="text"
+                    value= {yaml}
                 />
 
             </form>

@@ -16,16 +16,10 @@ root.render(
           <JsonToYaml />
         </React.StrictMode>
       </TabPane>
-      <TabPane tab="Tab Title 2" key="2">
-        <p>Content of Tab Pane 2</p>
-        <p>Content of Tab Pane 2</p>
-        <p>Content of Tab Pane 2</p>
+      {/*<TabPane tab="Tab Title 2" key="2">
       </TabPane>
       <TabPane tab="Tab Title 3" key="3">
-        <p>Content of Tab Pane 3</p>
-        <p>Content of Tab Pane 3</p>
-        <p>Content of Tab Pane 3</p>
-      </TabPane>
+      </TabPane>*/}
     </Tabs>
   </div>
 
