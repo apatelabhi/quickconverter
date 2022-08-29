@@ -11,13 +11,13 @@ const { TextArea } = Input;
 function JsonToYaml() {
     const [json, setJson] = useState("");
     const [validJson, setValidJson] = useState("");
-    const [output, setOutput] = React.useState('')
+    const [jsonOutput, setJsonOutput] = React.useState('')
     const [yaml, setYAML] = useState("");
 
     useEffect(() => {
         const value = localStorage.getItem('json')
         setJson(value)
-        log({target: {value}})
+        log({ target: { value } })
 
     }, []);
 
@@ -26,27 +26,41 @@ function JsonToYaml() {
     }
 
     function validateJson() {
-        localStorage.setItem("validJson", json);
-        setValidJson(json)
+        setValidJson(jsonOutput)
+        localStorage.setItem("validJson", jsonOutput);
     }
 
     function converJsonToYaml() {
-        setYAML(output)
-        localStorage.setItem("yaml", output);
+
+        const YAML = require('yaml');
+        // parse YAML string
+        const nativeObject = YAML.parse(jsonOutput);
+
+        // Generate YAML
+        const yamlString = YAML.stringify(nativeObject, 4);
+
+        setYAML(yamlString)
+        localStorage.setItem("yaml", yamlString);
     }
 
     function clearData() {
-        //localStorage.setItem("json", "");
-        //setJson("")
+        setJson("")
         setValidJson("")
         setYAML("")
     }
 
-    const log = ({target: {value: json}})  => Promise.resolve(json)
-    .then(load)
-    .then(t => JSON.stringify(t, null, 2))
-    .then(setOutput)
-    .then(() => localStorage.setItem('json', json))
+    function onCut() {
+        localStorage.setItem("json", "");
+        setJson("")
+        setValidJson("")
+        setYAML("")
+    }
+
+    const log = ({ target: { value: json } }) => Promise.resolve(json)
+        .then(load)
+        .then(t => JSON.stringify(t, null, 2))
+        .then(setJsonOutput)
+        .then(() => localStorage.setItem('json', json))
 
     var JSONPrettyMon = require('react-json-pretty/dist/monikai');
 
@@ -60,7 +74,8 @@ function JsonToYaml() {
                     //value={json}
                     defaultValue={json}
                     onChange={log}
-                    //onChange={(e) => setJson(e.target.value)}
+                    onCut={onCut}
+                //onChange={(e) => setJson(e.target.value)}
                 />
 
                 <div style={{ marginTop: '-410px', marginLeft: '830px' }}>
@@ -71,11 +86,11 @@ function JsonToYaml() {
                 <button style={{ marginLeft: '10px', float: 'left' }} onClick={converJsonToYaml}>JSON TO YAML</button>
                 <button style={{ marginLeft: '10px', float: 'left' }} onClick={clearData}>Clear</button>
 
-                
+
                 <TextArea rows={4}
                     style={{ height: '400px', width: '1450px', marginTop: '10px', marginBottom: '10px' }}
                     type="text"
-                    value= {yaml}
+                    value={yaml}
                 />
 
             </form>
