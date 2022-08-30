@@ -3,44 +3,38 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
-import { load } from 'js-yaml'
+//import { load } from 'js-yaml'
 
 const { TextArea } = Input;
-
+var JSONPrettyMon = require('react-json-pretty/dist/monikai');
 
 function JsonToYaml() {
     const [json, setJson] = useState("");
     const [validJson, setValidJson] = useState("");
-    const [jsonOutput, setJsonOutput] = React.useState('')
     const [yaml, setYAML] = useState("");
+    //const [jsonOutput, setJsonOutput] = React.useState('')
 
     useEffect(() => {
-        const value = localStorage.getItem('json')
-        setJson(value)
-        log({ target: { value } })
+        //const value = localStorage.getItem('json')
+        //setJson(value)
+        //log({ target: { value } })
 
     }, []);
 
-    const handleSubmit = (evt) => {
-        evt.preventDefault();
-    }
-
+ 
     function validateJson() {
-        setValidJson(jsonOutput)
-        localStorage.setItem("validJson", jsonOutput);
+        setValidJson(json)
     }
 
     function converJsonToYaml() {
 
         const YAML = require('yaml');
         // parse YAML string
-        const nativeObject = YAML.parse(jsonOutput);
+        const nativeObject = YAML.parse(json);
 
         // Generate YAML
         const yamlString = YAML.stringify(nativeObject, 4);
-
         setYAML(yamlString)
-        localStorage.setItem("yaml", yamlString);
     }
 
     function clearData() {
@@ -50,32 +44,29 @@ function JsonToYaml() {
     }
 
     function onCut() {
-        localStorage.setItem("json", "");
         setJson("")
         setValidJson("")
         setYAML("")
     }
 
-    const log = ({ target: { value: json } }) => Promise.resolve(json)
+    /*const log = ({ target: { value: json } }) => Promise.resolve(json)
         .then(load)
         .then(t => JSON.stringify(t, null, 2))
         .then(setJsonOutput)
-        .then(() => localStorage.setItem('json', json))
-
-    var JSONPrettyMon = require('react-json-pretty/dist/monikai');
+        .then(() => localStorage.setItem('json', json))*/
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
+           
                 <TextArea
                     style={{ height: '400px', width: '800px' }}
                     rows={4}
                     type="text"
-                    //value={json}
-                    defaultValue={json}
-                    onChange={log}
+                    value={json}
+                    //defaultValue={json}
+                    //onChange={log}
                     onCut={onCut}
-                //onChange={(e) => setJson(e.target.value)}
+                    onChange={(e) => setJson(e.target.value)}
                 />
 
                 <div style={{ marginTop: '-410px', marginLeft: '830px' }}>
@@ -92,9 +83,6 @@ function JsonToYaml() {
                     type="text"
                     value={yaml}
                 />
-
-            </form>
-
         </>
     );
 }
